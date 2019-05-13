@@ -1,225 +1,205 @@
 package com.vdurmont.emoji;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class EmojiManagerTest {
-  @Test
-  public void getForTag_with_unknown_tag_returns_null() throws IOException {
-    // GIVEN
+	@Test
+	public void getAll_doesnt_return_duplicates() {
+		// GIVEN
 
-    // WHEN
-    Set<Emoji> emojis = EmojiManager.getForTag("jkahsgdfjksghfjkshf");
+		// WHEN
+		Collection<Emoji> emojis = EmojiManager.getAll();
 
-    // THEN
-    assertNull(emojis);
-  }
+		// THEN
+		Set<String> unicodes = new HashSet<String>();
+		for (Emoji emoji : emojis) {
+			assertFalse("Duplicate: " + emoji.getDescription(), unicodes.contains(emoji.getUnicode()));
+			unicodes.add(emoji.getUnicode());
+		}
+		assertEquals(unicodes.size(), emojis.size());
+	}
 
-  @Test
-  public void getForTag_returns_the_emojis_for_the_tag() throws IOException {
-    // GIVEN
+	@Test
+	public void getAllTags_returns_the_tags() {
+		// GIVEN
 
-    // WHEN
-    Set<Emoji> emojis = EmojiManager.getForTag("happy");
+		// WHEN
+		Collection<String> tags = EmojiManager.getAllTags();
 
-    // THEN
-    assertEquals(4, emojis.size());
-    assertTrue(TestTools.containsEmojis(
-      emojis,
-      "smile",
-      "smiley",
-      "grinning",
-      "satisfied"
-    ));
-  }
+		// THEN
+		// We know the number of distinct tags int the...!
+		assertEquals(594, tags.size());
+	}
 
-  @Test
-  public void getForAlias_with_unknown_alias_returns_null() throws IOException {
-    // GIVEN
+	@Test
+	public void getForAlias_returns_the_emoji_for_the_alias() throws IOException {
+		// GIVEN
 
-    // WHEN
-    Emoji emoji = EmojiManager.getForAlias("jkahsgdfjksghfjkshf");
+		// WHEN
+		Emoji emoji = EmojiManager.getForAlias("smile");
 
-    // THEN
-    assertNull(emoji);
-  }
+		// THEN
+		assertEquals("smiling face with open mouth and smiling eyes", emoji.getDescription());
+	}
 
-  @Test
-  public void getForAlias_returns_the_emoji_for_the_alias() throws IOException {
-    // GIVEN
+	@Test
+	public void getForAlias_with_colons_returns_the_emoji_for_the_alias() throws IOException {
+		// GIVEN
 
-    // WHEN
-    Emoji emoji = EmojiManager.getForAlias("smile");
+		// WHEN
+		Emoji emoji = EmojiManager.getForAlias(":smile:");
 
-    // THEN
-    assertEquals(
-      "smiling face with open mouth and smiling eyes",
-      emoji.getDescription()
-    );
-  }
+		// THEN
+		assertEquals("smiling face with open mouth and smiling eyes", emoji.getDescription());
+	}
 
-  @Test
-  public void getForAlias_with_colons_returns_the_emoji_for_the_alias()
-    throws IOException {
-    // GIVEN
+	@Test
+	public void getForAlias_with_unknown_alias_returns_null() throws IOException {
+		// GIVEN
 
-    // WHEN
-    Emoji emoji = EmojiManager.getForAlias(":smile:");
+		// WHEN
+		Emoji emoji = EmojiManager.getForAlias("jkahsgdfjksghfjkshf");
 
-    // THEN
-    assertEquals(
-      "smiling face with open mouth and smiling eyes",
-      emoji.getDescription()
-    );
-  }
+		// THEN
+		assertNull(emoji);
+	}
 
-  @Test
-  public void isEmoji_for_an_emoji_returns_true() {
-    // GIVEN
-    String emoji = "😀";
+	@Test
+	public void getForTag_returns_the_emojis_for_the_tag() throws IOException {
+		// GIVEN
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(emoji);
+		// WHEN
+		Set<Emoji> emojis = EmojiManager.getForTag("happy");
 
-    // THEN
-    assertTrue(isEmoji);
-  }
+		// THEN
+		assertEquals(4, emojis.size());
+		assertTrue(TestTools.containsEmojis(emojis, "smile", "smiley", "grinning", "satisfied"));
+	}
 
-  @Test
-  public void isEmoji_with_fitzpatric_modifier_returns_true() {
-    // GIVEN
-    String emoji = "\uD83E\uDD30\uD83C\uDFFB";
+	@Test
+	public void getForTag_with_unknown_tag_returns_null() throws IOException {
+		// GIVEN
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(emoji);
+		// WHEN
+		Set<Emoji> emojis = EmojiManager.getForTag("jkahsgdfjksghfjkshf");
 
-    // THEN
-    assertTrue(isEmoji);
-  }
+		// THEN
+		assertNull(emojis);
+	}
 
-  @Test
-  public void isEmoji_for_a_non_emoji_returns_false() {
-    // GIVEN
-    String str = "test";
+	@Test
+	public void isEmoji_for_a_non_emoji_returns_false() {
+		// GIVEN
+		String str = "test";
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(str);
+		// WHEN
+		boolean isEmoji = EmojiManager.isEmoji(str);
 
-    // THEN
-    assertFalse(isEmoji);
-  }
+		// THEN
+		assertFalse(isEmoji);
+	}
 
-  @Test
-  public void isEmoji_for_an_emoji_and_other_chars_returns_false() {
-    // GIVEN
-    String str = "😀 test";
+	@Test
+	public void isEmoji_for_an_emoji_and_other_chars_returns_false() {
+		// GIVEN
+		String str = "😀 test";
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isEmoji(str);
+		// WHEN
+		boolean isEmoji = EmojiManager.isEmoji(str);
 
-    // THEN
-    assertFalse(isEmoji);
-  }
+		// THEN
+		assertFalse(isEmoji);
+	}
 
-  @Test
-  public void isOnlyEmojis_for_an_emoji_returns_true() {
-    // GIVEN
-    String str = "😀";
+	@Test
+	public void isEmoji_for_an_emoji_returns_true() {
+		// GIVEN
+		String emoji = "😀";
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+		// WHEN
+		boolean isEmoji = EmojiManager.isEmoji(emoji);
 
-    // THEN
-    assertTrue(isEmoji);
-  }
+		// THEN
+		assertTrue(isEmoji);
+	}
 
-  @Test
-  public void isOnlyEmojis_for_emojis_returns_true() {
-    // GIVEN
-    String str = "😀😀😀";
+	@Test
+	public void isEmoji_with_fitzpatric_modifier_returns_true() {
+		// GIVEN
+		String emoji = "\uD83E\uDD30\uD83C\uDFFB";
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+		// WHEN
+		boolean isEmoji = EmojiManager.isEmoji(emoji);
 
-    // THEN
-    assertTrue(isEmoji);
-  }
+		// THEN
+		assertTrue(isEmoji);
+	}
 
-  @Test
-  public void isOnlyEmojis_for_random_string_returns_false() {
-    // GIVEN
-    String str = "😀a";
+	@Test
+	public void isOnlyEmojis_for_an_emoji_returns_true() {
+		// GIVEN
+		String str = "😀";
 
-    // WHEN
-    boolean isEmoji = EmojiManager.isOnlyEmojis(str);
+		// WHEN
+		boolean isEmoji = EmojiManager.isOnlyEmojis(str);
 
-    // THEN
-    assertFalse(isEmoji);
-  }
+		// THEN
+		assertTrue(isEmoji);
+	}
 
-  @Test
-  public void getAllTags_returns_the_tags() {
-    // GIVEN
+	@Test
+	public void isOnlyEmojis_for_emojis_returns_true() {
+		// GIVEN
+		String str = "😀😀😀";
 
-    // WHEN
-    Collection<String> tags = EmojiManager.getAllTags();
+		// WHEN
+		boolean isEmoji = EmojiManager.isOnlyEmojis(str);
 
-    // THEN
-    // We know the number of distinct tags int the...!
-    assertEquals(594, tags.size());
-  }
+		// THEN
+		assertTrue(isEmoji);
+	}
 
-  @Test
-  public void getAll_doesnt_return_duplicates() {
-    // GIVEN
+	@Test
+	public void isOnlyEmojis_for_random_string_returns_false() {
+		// GIVEN
+		String str = "😀a";
 
-    // WHEN
-    Collection<Emoji> emojis = EmojiManager.getAll();
+		// WHEN
+		boolean isEmoji = EmojiManager.isOnlyEmojis(str);
 
-    // THEN
-    Set<String> unicodes = new HashSet<String>();
-    for (Emoji emoji : emojis) {
-      assertFalse(
-        "Duplicate: " + emoji.getDescription(),
-        unicodes.contains(emoji.getUnicode())
-      );
-      unicodes.add(emoji.getUnicode());
-    }
-    assertEquals(unicodes.size(), emojis.size());
-  }
+		// THEN
+		assertFalse(isEmoji);
+	}
 
-  @Test
-  public void no_duplicate_alias() {
-    // GIVEN
+	@Test
+	public void no_duplicate_alias() {
+		// GIVEN
 
-    // WHEN
-    Collection<Emoji> emojis = EmojiManager.getAll();
+		// WHEN
+		Collection<Emoji> emojis = EmojiManager.getAll();
 
-    // THEN
-    Set<String> aliases = new HashSet<String>();
-    Set<String> duplicates = new HashSet<String>();
-    for (Emoji emoji : emojis) {
-      for (String alias : emoji.getAliases()) {
-        if (aliases.contains(alias)) {
-          duplicates.add(alias);
-        }
-        aliases.add(alias);
-      }
-    }
-    assertEquals("Duplicates: " + duplicates, duplicates.size(), 0);
-  }
+		// THEN
+		Set<String> aliases = new HashSet<String>();
+		Set<String> duplicates = new HashSet<String>();
+		for (Emoji emoji : emojis) {
+			for (String alias : emoji.getAliases()) {
+				if (aliases.contains(alias)) {
+					duplicates.add(alias);
+				}
+				aliases.add(alias);
+			}
+		}
+		assertEquals("Duplicates: " + duplicates, duplicates.size(), 0);
+	}
 }
