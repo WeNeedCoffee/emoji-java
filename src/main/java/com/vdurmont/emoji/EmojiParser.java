@@ -102,7 +102,7 @@ public class EmojiParser {
 
 	public static List<String> extractEmojis(String input) {
 		List<UnicodeCandidate> emojis = getUnicodeCandidates(input);
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (UnicodeCandidate emoji : emojis) {
 			result.add(emoji.getEmoji().getUnicode());
 		}
@@ -110,7 +110,7 @@ public class EmojiParser {
 	}
 
 	protected static List<AliasCandidate> getAliasCandidates(String input) {
-		List<AliasCandidate> candidates = new ArrayList<AliasCandidate>();
+		List<AliasCandidate> candidates = new ArrayList<>();
 
 		Matcher matcher = ALIAS_CANDIDATE_PATTERN.matcher(input);
 		matcher = matcher.useTransparentBounds(true);
@@ -191,7 +191,7 @@ public class EmojiParser {
 	 */
 	protected static List<UnicodeCandidate> getUnicodeCandidates(String input) {
 		char[] inputCharArray = input.toCharArray();
-		List<UnicodeCandidate> candidates = new ArrayList<UnicodeCandidate>();
+		List<UnicodeCandidate> candidates = new ArrayList<>();
 		UnicodeCandidate next;
 		for (int i = 0; (next = getNextUnicodeCandidate(inputCharArray, i)) != null; i = next.getFitzpatrickEndIndex()) {
 			candidates.add(next);
@@ -259,6 +259,7 @@ public class EmojiParser {
 	 */
 	public static String parseToAliases(String input, final FitzpatrickAction fitzpatrickAction) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				switch (fitzpatrickAction) {
 					default:
@@ -312,6 +313,7 @@ public class EmojiParser {
 	 */
 	public static String parseToHtmlDecimal(String input, final FitzpatrickAction fitzpatrickAction) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				switch (fitzpatrickAction) {
 					default:
@@ -363,6 +365,7 @@ public class EmojiParser {
 	 */
 	public static String parseToHtmlHexadecimal(String input, final FitzpatrickAction fitzpatrickAction) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				switch (fitzpatrickAction) {
 					default:
@@ -426,6 +429,7 @@ public class EmojiParser {
 	 */
 	public static String removeAllEmojis(String str) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				return "";
 			}
@@ -443,6 +447,7 @@ public class EmojiParser {
 	 */
 	public static String removeAllEmojisExcept(String str, final Collection<Emoji> emojisToKeep) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				if (emojisToKeep.contains(unicodeCandidate.getEmoji()))
 					return unicodeCandidate.getEmoji().getUnicode() + unicodeCandidate.getFitzpatrickUnicode();
@@ -462,6 +467,7 @@ public class EmojiParser {
 	 */
 	public static String removeEmojis(String str, final Collection<Emoji> emojisToRemove) {
 		EmojiTransformer emojiTransformer = new EmojiTransformer() {
+			@Override
 			public String transform(UnicodeCandidate unicodeCandidate) {
 				if (!emojisToRemove.contains(unicodeCandidate.getEmoji()))
 					return unicodeCandidate.getEmoji().getUnicode() + unicodeCandidate.getFitzpatrickUnicode();
@@ -482,6 +488,7 @@ public class EmojiParser {
 	 */
 	public static String replaceAllEmojis(String str, final String replacementString) {
 		EmojiParser.EmojiTransformer emojiTransformer = new EmojiParser.EmojiTransformer() {
+			@Override
 			public String transform(EmojiParser.UnicodeCandidate unicodeCandidate) {
 				return replacementString;
 			}

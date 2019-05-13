@@ -47,7 +47,7 @@ public class EmojiLoader {
 	}
 
 	private static List<String> jsonArrayToStringList(JSONArray array) {
-		List<String> strings = new ArrayList<String>(array.length());
+		List<String> strings = new ArrayList<>(array.length());
 		for (int i = 0; i < array.length(); i++) {
 			strings.add(array.getString(i));
 		}
@@ -65,7 +65,7 @@ public class EmojiLoader {
 	 */
 	public static List<Emoji> loadEmojis(InputStream stream) throws IOException {
 		JSONArray emojisJSON = new JSONArray(inputStreamToString(stream));
-		List<Emoji> emojis = new ArrayList<Emoji>(emojisJSON.length());
+		List<Emoji> emojis = new ArrayList<>(emojisJSON.length());
 		for (int i = 0; i < emojisJSON.length(); i++) {
 			Emoji emoji = buildEmojiFromJSON(emojisJSON.getJSONObject(i));
 			if (emoji != null) {

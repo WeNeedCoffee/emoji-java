@@ -18,7 +18,7 @@ public class EmojiTrie {
 	}
 
 	private class Node {
-		private Map<Character, Node> children = new HashMap<Character, Node>();
+		private Map<Character, Node> children = new HashMap<>();
 		private Emoji emoji;
 
 		private void addChild(char child) {
@@ -63,7 +63,7 @@ public class EmojiTrie {
 
 	/**
 	 * Finds Emoji instance from emoji unicode
-	 * 
+	 *
 	 * @param unicode unicode of emoji to get
 	 * @return Emoji instance if unicode matches and emoji, null otherwise.
 	 */

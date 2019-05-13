@@ -153,7 +153,7 @@ public class Emoji {
 
 	/**
 	 * Method to replace String.join, since it was only introduced in java8
-	 * 
+	 *
 	 * @param array the array to be concatenated
 	 * @return concatenated String
 	 */

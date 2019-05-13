@@ -16,8 +16,8 @@ import java.util.Set;
  */
 public class EmojiManager {
 	private static final String PATH = "/emojis.json";
-	private static final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<String, Emoji>();
-	private static final Map<String, Set<Emoji>> EMOJIS_BY_TAG = new HashMap<String, Set<Emoji>>();
+	private static final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<>();
+	private static final Map<String, Set<Emoji>> EMOJIS_BY_TAG = new HashMap<>();
 	private static final List<Emoji> ALL_EMOJIS;
 	private static final EmojiTrie EMOJI_TRIE;
 
@@ -104,7 +104,7 @@ public class EmojiManager {
 
 	/**
 	 * Checks if sequence of chars contain an emoji.
-	 * 
+	 *
 	 * @param sequence Sequence of char that may contain emoji in full or
 	 *                 partially.
 	 * @return &lt;li&gt; Matches.EXACTLY if char sequence in its entirety is an
